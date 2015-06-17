@@ -49,9 +49,6 @@ i21_print_str:                              ;
 ;-------------[ read a string ]-------------;
 i21_read_str:                               ;
     pusha                                   ; save registers
-    mov ax, KERNEL_SEG                      ; TODO: change this so it takes
-    mov es, ax                              ; es:di as write destination
-    mov di, si                              ; so we can use stosb
     mov cl, 0                               ; current string's size
 .loop:                                      ;
     mov ah, 0                               ; fetch character

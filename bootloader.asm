@@ -47,8 +47,8 @@ boot:                                       ;
     call read_disk                          ; read kernel from the disk
                                             ;
                                             ; prepare for going to kernel mode
-    mov ax, KERNEL_SEG                      ; make ds point to the kernel's
-    mov ds, ax                              ; segment
+    push KERNEL_SEG                         ; make ds point to the kernel's
+    pop ds                                  ; segment
                                             ;
     xor ax, ax                              ; zero out ax
     mov es, ax                              ; zero out segment registers
@@ -95,8 +95,8 @@ reset_disk:                                 ;
 read_disk:                                  ;
     pusha                                   ; save all the registers
     xor dh, dh                              ; head number
-    mov bx, KERNEL_SEG                      ; store kernel's segment
-    mov es, bx                              ; in es register
+    push KERNEL_SEG                         ; store kernel's segment
+    pop es                                  ; in es register
     xor bx, bx                              ; the padding
                                             ;
     mov cx, 3                               ; cx will be the loop counter

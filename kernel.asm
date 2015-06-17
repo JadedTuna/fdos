@@ -1,7 +1,7 @@
 ;=============================================================================;
 ;                                  FDOS                                       ;
 ;                         Written by Victor Kindhart                          ;
-;                 FDOS - bootloader.asm - Bootloader for FDOS                 ;
+;                    FDOS - kernel.asm - Kernel for FDOS                      ;
 ;=============================================================================;
 org 0 ; cs will cope with that
 use16 ; tell FASM we are REAL!
@@ -37,16 +37,19 @@ m_prompt db ">> ", 0                        ;
 ;=========[ main kernel function ]==========;
 kernel_main:                                ;
     call setup_IVT                          ; setup FDOS interrupts
+    push KERNEL_SEG                         ; for printing/writing
+    pop es                                  ;
 .loop:                                      ;
     mov ah, 0                               ; FDOS print
     mov si, m_prompt                        ; print prompt
     int INT_FDOS                            ;
                                             ;
-    mov si, d_input                         ; where user input lies
+    mov di, d_input                         ; where user input lies
     mov ah, 1                               ; FDOS read
     mov dl, 63                              ; max length
     int INT_FDOS                            ;
                                             ;
+    mov si, di                              ;
     mov ah, 0                               ; FDOS print
     int INT_FDOS                            ;
     jmp .loop                               ; and loop
