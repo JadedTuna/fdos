@@ -10,5 +10,5 @@ load and execute programs from the disk.
 
 # Interrupts
 For a list of interrupts, their description and example
-usage check out https://www.victorkindhart.com/projects/fdos/wiki.php  
+usage check out http://www.victorkindhart.com/projects/fdos/wiki.php  
 Please note that it is still under construction
