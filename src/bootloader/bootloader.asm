@@ -25,7 +25,7 @@ bpbSectorsPerTrack:     dw 18                                                 ; 
 bpbHeadsPerCylinder:    dw 2                                                  ; number of sides/heads
 bpbHiddenSectors:       dd 1                                                  ; number of hidden sectors
 bpbLargeSectors:        dd 0                                                  ; number of large sectors
-bpbDriveNumber:         db 0                                                  ; drive number
+bpbDriveNumber:         db 5                                                  ; drive number
 bpbNTReserved:          db 0                                                  ; reserved by Windows NT
 bpbSignature:           db 0x29                                               ; drive signature (0x29 for floppy)
 bpbVolumeID:            dd 42                                                 ; volume ID (any number)
@@ -35,6 +35,7 @@ bpbFileSystem:          db "FAT12   "                                         ; 
 
 ;=======================[ main bootloader subroutine ]========================;
 boot:                                                                         ;
+    mov [bpbDriveNumber], dl
     cli                                                                       ; disable interrupts
     mov ax, cs                                                                ; make sure ds is the same as cs
     mov ds, ax                                                                ; nop, 0
@@ -73,7 +74,6 @@ boot:                                                                         ;
     mov si, m_found                                                           ;
     call puts                                                                 ;
                                                                               ;
-    mov ax, 3                                                                 ; first cluster
     push KERNEL_SEG                                                           ;
     pop es                                                                    ;
     mov bx, 0                                                                 ;
@@ -155,9 +155,6 @@ read_sectors:                                                                 ;
     mov cl, BYTE [lbachs_absoluteSector]                                      ; sector
     mov dh, BYTE [lbachs_absoluteHead]                                        ; head
     mov dl, BYTE [bpbDriveNumber]                                             ; drive number
-                                                                              ;
-                                                                              ;
-    call reset_disk                                                           ; reset disk system
                                                                               ;
     push dx                                                                   ; some BIOSes trash dx
     int INT_DISK                                                              ; magic!
@@ -338,6 +335,8 @@ search_file:                                                                  ;
                                                                               ;
 .found:                                                                       ; file found
     clc                                                                       ;
+    mov ax, WORD [es:di + 26]                                                 ; save first cluster
+    mov WORD [.first_cluster], ax                                             ;
     jmp .end                                                                  ;
 .not_found:                                                                   ; file not found
     stc                                                                       ;
@@ -345,7 +344,10 @@ search_file:                                                                  ;
 .end:                                                                         ; clean up and return
     popa                                                                      ;
     pop es                                                                    ;
+    mov ax, [.first_cluster]                                                  ; store first cluster in AX
     ret                                                                       ;
+;-----------------------------------------------------------------------------;
+.first_cluster dw 0                                                           ; first file cluster
 ;=============================================================================;
 
 ;================================[ read file ]================================;
