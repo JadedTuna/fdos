@@ -1,0 +1,3 @@
+[x] Have bootloader search for KERNEL.SYS on the filesystem
+[ ] Have a shell which can load and execute programs
+[ ] Add more interrupts for use by programs
