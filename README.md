@@ -2,7 +2,7 @@
 FDOS is a real mode DOS-like operating system written in x86 assembly.
 
 # About
-FDOS is a learning project to learn more about filesystems, operating systems and x86 assembly. The code is available under the LGPL license.
+FDOS is a learning project to learn more about filesystems, operating systems and x86 assembly. The code is available under the GPL license.
 
 # TODO
 See [TODO.md](TODO.md)
